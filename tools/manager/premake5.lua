@@ -9,7 +9,7 @@ workspace "Penguin"
 
     language "C"
     warnings "Extra"
-    buildoptions { "-idirafter ../../../kernel/src", "-DLINUX -std=gnu99", "-mcmodel=large", "-Wno-unused", "-Wno-format", "-Wno-unused-result", "-fno-builtin" }
+    buildoptions { "-idirafter ../../../kernel/src", "-DLINUX -DPACKETNGIN_MULTI -std=gnu99", "-mcmodel=large", "-Wno-unused", "-Wno-format", "-Wno-unused-result", "-fno-builtin" }
     linkoptions { "-nostartfiles", "-Wl,-Ttext-segment=0xff00000000" }
 
     filter 'files:src/**.asm'
