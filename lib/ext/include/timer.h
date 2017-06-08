@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-extern const uint64_t TIMER_FREQUENCY_PER_SEC;
+extern uint64_t TIMER_FREQUENCY_PER_SEC;
 extern uint64_t __timer_ms;
 extern uint64_t __timer_us;
 extern uint64_t __timer_ns;
