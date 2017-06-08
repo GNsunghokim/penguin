@@ -15,6 +15,8 @@
 
 #include "rpc.h"
 
+err_t *accept(RPC* crpc);
+
 typedef struct {
 	int	fd;
 	struct	sockaddr_in caddr;
@@ -309,4 +311,79 @@ RPC* rpc_accept(RPC* srpc) {
        data->fd = fd;
 
        return rpc;
+}
+
+typedef struct {
+	int     fd;
+	struct  sockaddr_in caddr;
+} RPCData;
+
+static List* actives;	/* rpc */
+
+
+static bool manager_accept_loop(void* rpc) {
+	// RPC socket is nonblocking
+	RPC* crpc = rpc_accept((RPC*)rpc);
+	if(!crpc)
+		return true;
+
+	accept(crpc);
+
+	if(list_index_of(actives, crpc, NULL) < 0)
+		list_add(actives, crpc);
+
+	RPCData* data = (RPCData*)crpc->data;
+	//printf("Connection opened : %s\n", inet_ntoa(data->caddr.sin_addr));
+
+	return true;
+}
+
+bool manager_core_server_close(ManagerCore* manager_core) {
+}
+
+ManagerCore* manager_core_server_open(uint16_t port) {
+	ManagerCore* manager_core = malloc(sizeof(ManagerCore));
+
+	RPC* rpc = rpc_listen(port);
+	if(!rpc) {
+		perror("\tFailed to listen RPC server socket");
+		return NULL;
+	}
+
+	if(actives == NULL)
+		actives = list_create(NULL);
+
+	event_idle_add(manager_accept_loop, (void*)rpc);
+
+	return manager_core;
+}
+
+static bool manager_loop(void* context) {
+	if(!list_is_empty(actives)) {
+		ListIterator iter;
+		list_iterator_init(&iter, actives);
+		while(list_iterator_has_next(&iter)) {
+			RPC* rpc = list_iterator_next(&iter);
+			if(!rpc_is_closed(rpc))
+				rpc_loop(rpc);
+			else
+				list_remove_data(actives, rpc);
+		}
+	}
+
+	return true;
+}
+
+bool manager_core_init() {
+	if(!manager_server_open()) {
+		printf("\tFailed to open manager server\n");
+		return false;
+	}
+	printf("\tManager RPC server opened\n");
+
+	event_idle_add(manager_loop, NULL);
+
+	vm_stdio_handler(stdio_callback);
+
+	return true;
 }

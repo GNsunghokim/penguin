@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <util/list.h>
-#include <lwip/tcp.h>
+//#include <lwip/tcp.h>
 #include <vnic.h>
 
 #define MANAGER_DEFAULT_NICDEV	"eth0"
