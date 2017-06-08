@@ -1,5 +1,5 @@
-#ifndef __DISPATCHER_H__
-#define __DISPATCHER_H__
+#ifndef __DISPATCHER_IMPL_H__
+#define __DISPATCHER_IMPL_H__
 
 #include <linux/types.h>
 
@@ -13,13 +13,4 @@
 #define DISPATCHER_UPDATE_VNIC		_IOWR(DISPATCHER, 0x22, void *)
 #define DISPATCHER_GET_VNIC		_IOR(DISPATCHER, 0x23, void *)
 
-int dispatcher_init(void);
-void dispatcher_exit(void);
-int dispatcher_create_nic(void* dev);
-int dispatcher_destroy_nic(void* dev);
-int dispatcher_create_vnic(void* vnic);
-int dispatcher_destroy_vnic(void* vnic);
-int dispatcher_update_vnic(void* vnic);
-int dispatcher_get_vnic(void* vnic);
-
-#endif /* __DISPATCHER_H__ */
+#endif /* __DISPATCHER_IMPL_H__ */

@@ -26,7 +26,7 @@ workspace "Penguin"
         targetname "manager"
         targetdir "."
         files { "src/**.h", "src/**.c", "src/**.asm" }
-        includedirs { "../../lib/include" }
+        includedirs { "..", "../../lib/include" }
         libdirs { ".", "build" }
         links { "ext", "rt", "vnic", "tlsf" }
 
