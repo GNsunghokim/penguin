@@ -1,5 +1,6 @@
 project 'kernel'
     kind 'ConsoleApp'
+	defines { 'PACKETNGIN_SINGLE' }
 
     build.compileProperty('x86_64')
     removefiles { 'src/**.S' }

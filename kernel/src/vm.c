@@ -744,6 +744,9 @@ uint32_t vm_create(VMSpec* vm_spec) {
 			}
 
 			extern int dispatcher_create_vnic(void* vnic);
+			#ifdef PACKETNGIN_SINGLE
+			int dispatcher_create_vnic(void* vnic) { return 0; }
+			#endif
 			if(dispatcher_create_vnic(vnic) < 0) {
 				printf("Manager: Failed to create VNIC in dispatcher module: errno=%d.\n", errno);
 				goto fail;
