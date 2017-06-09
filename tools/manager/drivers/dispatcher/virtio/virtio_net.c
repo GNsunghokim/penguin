@@ -38,6 +38,7 @@ module_param(gso, bool, 0444);
 #include "dispatcher.h"
 #include "packet.h"
 
+// TODO Use nicdev api. instead of legacy nic api
 bool nic_process_input(uint8_t local_port, uint8_t* buf1, uint32_t size1, uint8_t* buf2, uint32_t size2);
 Packet* nic_process_output(uint8_t local_port);
 
