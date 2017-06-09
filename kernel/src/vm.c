@@ -378,8 +378,14 @@ static bool vm_delete(VM* vm, int core) {
 		}
 
 		if(vm->nics) {
-			for(uint16_t i = 0; i < vm->nic_count; i++) {
+			#ifdef PACKETNGIN_SINGLE
+			int dispatcher_destroy_vnic(void* vnic) { return 0; }
+			#else
+			extern int dispatcher_destroy_vnic(void* vnic);
+			#endif
+			for(int i = 0; i < vm->nic_count; i++) {
 				if(vm->nics[i]) {
+					dispatcher_destroy_vnic(vm->nics[i]);
 					bfree(vm->nics[i]->nic);
 					vnic_free_id(vm->nics[i]->id);
 					gfree(vm->nics[i]);
@@ -743,9 +749,10 @@ uint32_t vm_create(VMSpec* vm_spec) {
 				goto fail;
 			}
 
-			extern int dispatcher_create_vnic(void* vnic);
 			#ifdef PACKETNGIN_SINGLE
 			int dispatcher_create_vnic(void* vnic) { return 0; }
+			#else
+			extern int dispatcher_create_vnic(void* vnic);
 			#endif
 			if(dispatcher_create_vnic(vnic) < 0) {
 				printf("Manager: Failed to create VNIC in dispatcher module: errno=%d.\n", errno);
@@ -801,6 +808,8 @@ bool vm_destroy(uint32_t vmid) {
 			printf(", ");
 	}
 	printf("]\n");
+
+
 
 	vm_delete(vm, -1);
 
